@@ -1,10 +1,10 @@
 const ApiError = require("../error/ApiError");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { User, Basket, Favorite, Order } = require("../models/models");
+const {User, Basket, Favorite} = require("../models/models");
 
-const generateJwt = (id, name, email, role) => {
-  return jwt.sign({ id, name, email, role }, process.env.SECRET_KEY, {
+const generateJwt = (id, surname, name, email, phone, role) => {
+  return jwt.sign({id, surname, name, email, phone, role}, process.env.SECRET_KEY, {
     expiresIn: "24h",
   });
 };
@@ -12,31 +12,35 @@ const generateJwt = (id, name, email, role) => {
 class UserController {
   async registration(req, res, next) {
     try {
-      const { name, email, password, role } = req.body;
+      const {surname, name, email, phone, password, role} = req.body;
 
-      if (!name || !email || !password) {
+      if (!surname || !name || !email || !phone || !password) {
         return next(ApiError.badRequest("Некорректные данные пользователя"));
       }
 
-      const emailExist = await User.findOne({ where: { email } });
+      const emailExist = await User.findOne({where: {email}});
       if (emailExist) {
         return next(
           ApiError.badRequest("Пользователь с таким email уже существует")
         );
       }
 
+      const phoneExist = await User.findOne({where: {phone}});
+      if (phoneExist) {
+        return next(
+          ApiError.badRequest("Пользователь с таким номером телефона уже существует")
+        );
+      }
+
       const hashPassword = await bcrypt.hash(password, 5);
       const user = await User.create({
-        name,
-        email,
-        role,
+        surname, name, email, phone, role,
         password: hashPassword,
       });
-      await Basket.create({ userId: user.id });
-      await Favorite.create({ userId: user.id });
-      await Order.create({ userId: user.id });
-      const token = generateJwt(user.id, user.name, user.email, user.role);
-      return res.json({ token });
+      await Basket.create({userId: user.id});
+      await Favorite.create({userId: user.id});
+      const token = generateJwt(user.id, user.surname, user.name, user.email, user.phone, user.role);
+      return res.json({token});
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }
@@ -56,8 +60,8 @@ class UserController {
         return next(ApiError.internal("Указан неверный пароль"));
       }
 
-      const token = generateJwt(user.id, user.name, user.email, user.role);
-      return res.json({ token });
+      const token = generateJwt(user.id, user.surname, user.name, user.email, user.phone, user.role);
+      return res.json({token});
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }
@@ -67,11 +71,13 @@ class UserController {
     try {
       const token = generateJwt(
         req.user.id,
+        req.user.surname,
         req.user.name,
         req.user.email,
+        req.user.phone,
         req.user.role
       );
-      return res.json({ token });
+      return res.json({token});
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }
