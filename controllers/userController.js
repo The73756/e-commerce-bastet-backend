@@ -82,6 +82,84 @@ class UserController {
       next(ApiError.badRequest(e.message));
     }
   }
+
+  async update(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { surname, name, email, phone, password } = req.body;
+
+      const user = await User.findByPk(id);
+      if (!user) {
+        return next(ApiError.badRequest("Пользователь не найден"));
+      }
+
+      if (email && email !== user.email) {
+        const emailExist = await User.findOne({ where: { email } });
+        if (emailExist) {
+          return next(
+            ApiError.badRequest("Пользователь с таким email уже существует")
+          );
+        }
+      }
+
+      if (phone && phone !== user.phone) {
+        const phoneExist = await User.findOne({ where: { phone } });
+        if (phoneExist) {
+          return next(
+            ApiError.badRequest("Пользователь с таким телефоном уже существует")
+          );
+        }
+      }
+
+      const updateData = {
+        surname,
+        name,
+        email,
+        phone,
+      };
+
+      if (password) {
+        updateData.password = await bcrypt.hash(password, 5);
+      }
+
+      await user.update(updateData);
+
+      const token = generateJwt(
+        user.id,
+        user.surname,
+        user.name,
+        user.email,
+        user.phone,
+        user.role
+      );
+
+      return res.json({
+        token,
+        user: {
+          id: user.id,
+          surname: user.surname,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          role: user.role
+        }
+      });
+
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
+
+  async delete(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      await User.destroy({ where: { id } });
+      return res.json("Account удален");
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
 }
 
 module.exports = new UserController();
