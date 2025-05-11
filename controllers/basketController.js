@@ -53,7 +53,7 @@ class BasketController {
             model: Product,
             include: [
               { model: ProductPhoto, as: "photos" },
-              { model: Type, as: "pet" },
+              { model: Type, as: "type" },
               { model: Brand, as: "brand" },
             ],
           },
