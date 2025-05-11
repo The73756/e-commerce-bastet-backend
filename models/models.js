@@ -1,7 +1,6 @@
 const sequelize = require("../db");
 const { DataTypes } = require("sequelize");
 
-// ok
 const User = sequelize.define("user", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   surname: { type: DataTypes.STRING },
@@ -12,13 +11,11 @@ const User = sequelize.define("user", {
   role: { type: DataTypes.STRING, defaultValue: "USER" },
 });
 
-// ok
 const Basket = sequelize.define("basket", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   userId: { type: DataTypes.INTEGER, unique: true },
 });
 
-// ok
 const BasketProduct = sequelize.define("basket_product", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   basketId: { type: DataTypes.INTEGER },
@@ -26,27 +23,23 @@ const BasketProduct = sequelize.define("basket_product", {
   count: { type: DataTypes.INTEGER },
 });
 
-// ok
 const Favorite = sequelize.define("favorite", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   userId: { type: DataTypes.INTEGER, unique: true },
 });
 
-// ok
 const FavoriteProduct = sequelize.define("favorite_product", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   favoriteId: { type: DataTypes.INTEGER },
   productId: { type: DataTypes.INTEGER },
 });
 
-// ok
 const OrderType = sequelize.define("order_type", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, allowNull: false },
   price: { type: DataTypes.INTEGER },
 });
 
-// ok
 const OrderStatus = sequelize.define("order_status", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, allowNull: false },
@@ -74,7 +67,6 @@ const OrderProduct = sequelize.define("order_product", {
   count: { type: DataTypes.INTEGER },
 });
 
-// ok
 const Product = sequelize.define("product", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
@@ -87,25 +79,21 @@ const Product = sequelize.define("product", {
   tagId: { type: DataTypes.INTEGER },
 });
 
-// ok
 const Type = sequelize.define("type", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
-// ok
 const Brand = sequelize.define("brand", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
-// ok
 const Tag = sequelize.define("tag", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
-// ok
 const Rating = sequelize.define("rating", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   userId: { type: DataTypes.INTEGER },
@@ -114,7 +102,6 @@ const Rating = sequelize.define("rating", {
   productId: { type: DataTypes.INTEGER, allowNull: false },
 });
 
-// ok
 const ProductInfo = sequelize.define("product_info", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   title: { type: DataTypes.STRING, allowNull: false },
@@ -122,7 +109,6 @@ const ProductInfo = sequelize.define("product_info", {
   productId: { type: DataTypes.INTEGER, allowNull: false },
 });
 
-// ok
 const ProductPhoto = sequelize.define("product_photo", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   url: { type: DataTypes.STRING, allowNull: false },
