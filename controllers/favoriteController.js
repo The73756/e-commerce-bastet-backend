@@ -2,8 +2,8 @@ const {
   FavoriteProduct,
   Product,
   ProductPhoto,
-  Pet,
-  Brand,
+  Type,
+  Brand, Tag,
 } = require("../models/models");
 const ApiError = require("../error/ApiError");
 
@@ -25,7 +25,7 @@ class FavoriteController {
 
   async getAll(req, res, next) {
     try {
-      const { favoriteId } = req.query;
+      const { favoriteId } = req.params;
 
       const favoriteProducts = await FavoriteProduct.findAll({
         where: { favoriteId },
@@ -34,8 +34,9 @@ class FavoriteController {
             model: Product,
             include: [
               { model: ProductPhoto, as: "photos" },
-              { model: Pet, as: "pet" },
+              { model: Type, as: "type" },
               { model: Brand, as: "brand" },
+              { model: Tag, as: "tag" },
             ],
           },
         ],
@@ -48,7 +49,7 @@ class FavoriteController {
 
   async delete(req, res, next) {
     try {
-      const { id } = req.query;
+      const { id } = req.params;
 
       if (!id) {
         return next(ApiError.badRequest("Товар с таким id не найден"));

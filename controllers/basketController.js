@@ -3,7 +3,7 @@ const {
   Product,
   ProductPhoto,
   Type,
-  Brand,
+  Brand, Tag,
 } = require("../models/models");
 const ApiError = require("../error/ApiError");
 
@@ -56,6 +56,7 @@ class BasketController {
               { model: ProductPhoto, as: "photos" },
               { model: Type, as: "type" },
               { model: Brand, as: "brand" },
+              { model: Tag, as: "tag" },
             ],
           },
         ],
