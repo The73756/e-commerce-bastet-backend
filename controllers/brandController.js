@@ -1,4 +1,4 @@
-const { Brand } = require("../models/models");
+const { Brand} = require("../models/models");
 const ApiError = require("../error/ApiError");
 
 class BrandController {
@@ -8,26 +8,52 @@ class BrandController {
 
       const isExist = await Brand.findOne({ where: { name } });
       if (isExist) {
-        return next(ApiError.badRequest("Такой бренд уже существует!"));
+        return next(
+          ApiError.badRequest("Такой бренд уже существует!")
+        );
       }
 
-      const brand = await Brand.create({ name });
-      return res.json(brand);
+      const type = await Brand.create({ name });
+      return res.json(type);
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }
   }
 
   async getAll(req, res) {
-    const brands = await Brand.findAll();
-    return res.json(brands);
+    const types = await Brand.findAll({
+      order: [
+        ['id', 'ASC']
+      ]
+    });
+    return res.json(types);
+  }
+
+  async update(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { name } = req.body;
+      const type = await Brand.findOne({
+        where: { id },
+      });
+
+      if (!type) {
+        return next(ApiError.badRequest("Не найден"));
+      } else {
+        await Brand.update({ name }, { where: { id } });
+        return res.json("Обновлено");
+      }
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
   }
 
   async delete(req, res, next) {
     try {
-      const { id } = req.query;
+      const { id } = req.params;
+
       await Brand.destroy({ where: { id } });
-      return res.json("Бренд удален");
+      return res.json("Тип удален");
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }

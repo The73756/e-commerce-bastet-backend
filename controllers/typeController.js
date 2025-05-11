@@ -40,8 +40,7 @@ class TypeController {
       if (!type) {
         return next(ApiError.badRequest("Не найден"));
       } else {
-        const t = await Type.update({ name }, { where: { id } });
-        console.log("DFGHFGH", t)
+        await Type.update({ name }, { where: { id } });
         return res.json("Обновлено");
       }
     } catch (e) {
