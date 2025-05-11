@@ -2,7 +2,7 @@ const {
   BasketProduct,
   Product,
   ProductPhoto,
-  Pet,
+  Type,
   Brand,
 } = require("../models/models");
 const ApiError = require("../error/ApiError");
@@ -53,7 +53,7 @@ class BasketController {
             model: Product,
             include: [
               { model: ProductPhoto, as: "photos" },
-              { model: Pet, as: "pet" },
+              { model: Type, as: "pet" },
               { model: Brand, as: "brand" },
             ],
           },
