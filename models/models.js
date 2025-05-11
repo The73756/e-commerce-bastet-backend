@@ -152,10 +152,10 @@ User.hasMany(Order);
 Order.belongsTo(User);
 
 OrderStatus.hasMany(Order);
-Order.belongsTo(OrderStatus);
+Order.belongsTo(OrderStatus, { as: "orderStatus" });
 
 OrderType.hasMany(Order);
-Order.belongsTo(OrderType);
+Order.belongsTo(OrderType, { as: "orderType" });
 
 Order.hasMany(OrderProduct, { as: "products" });
 OrderProduct.belongsTo(Order);

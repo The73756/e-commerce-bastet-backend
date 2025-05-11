@@ -1,10 +1,10 @@
 const {
-  OrderItem,
+  Order,
   OrderProduct,
   Product,
   ProductPhoto,
-  Pet,
-  Brand,
+  Type,
+  Brand, OrderStatus, Tag, OrderType,
 } = require("../models/models");
 const ApiError = require("../error/ApiError");
 
@@ -13,29 +13,38 @@ class OrderController {
     try {
       let {
         products,
-        orderId,
-        status,
+        userId,
+        orderTypeId,
+        orderStatusId,
         price,
-        recipient,
-        recipientEmail,
-        address,
+        street,
+        house,
+        appartament,
+        intercom,
+        phone,
+        comment
       } = req.body;
 
-      const order = await OrderItem.create({
-        orderId,
-        status,
+      const order = await Order.create({
+        userId,
+        orderTypeId,
+        orderStatusId,
+        status: " ",
         price,
-        recipient,
-        recipientEmail,
-        address,
+        street,
+        house,
+        appartament,
+        intercom,
+        phone,
+        comment
       });
 
       if (products) {
         products = JSON.parse(products);
         products.forEach((i) => {
           OrderProduct.create({
-            orderItemId: order.id,
-            productId: i.productId, // айди товара id (если передается Product) или productId (если передается BasketProduct) ???
+            orderId: order.id,
+            productId: i.productId,
             count: i.count,
           });
         });
@@ -49,17 +58,23 @@ class OrderController {
 
   async updateStatus(req, res, next) {
     try {
-      const { id, status } = req.body;
-      const order = await OrderItem.findOne({
-        where: { id },
+      const {id} = req.params;
+      const {orderStatusId} = req.body;
+      const order = await Order.findOne({
+        where: {id},
       });
 
       if (!order) {
         return next(ApiError.badRequest("Заказ не найден"));
-      } else {
-        await OrderItem.update({ status }, { where: { id } });
-        return res.json("Статус заказа обновлен");
       }
+
+      const statusExists = await OrderStatus.findByPk(orderStatusId);
+      if (!statusExists) {
+        return next(ApiError.badRequest("Указанный статус не существует"));
+      }
+
+      await Order.update({orderStatusId}, {where: {id}});
+      return res.json("Статус заказа обновлен");
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }
@@ -67,10 +82,10 @@ class OrderController {
 
   async getAllOfUser(req, res, next) {
     try {
-      const { orderId } = req.query;
+      const {userId} = req.params;
 
-      const orders = await OrderItem.findAll({
-        where: { orderId },
+      const orders = await Order.findAll({
+        where: {userId},
         include: [
           {
             model: OrderProduct,
@@ -79,12 +94,21 @@ class OrderController {
               {
                 model: Product,
                 include: [
-                  { model: ProductPhoto, as: "photos" },
-                  { model: Pet, as: "pet" },
-                  { model: Brand, as: "brand" },
+                  {model: ProductPhoto, as: "photos"},
+                  {model: Type, as: "type"},
+                  {model: Brand, as: "brand"},
+                  {model: Tag, as: "tag"},
                 ],
               },
             ],
+          },
+          {
+            model: OrderStatus,
+            as: "orderStatus",
+          },
+          {
+            model: OrderType,
+            as: "orderType",
           },
         ],
         order: [["createdAt", "DESC"]],
@@ -97,7 +121,7 @@ class OrderController {
 
   async getAll(req, res, next) {
     try {
-      const orders = await OrderItem.findAll({
+      const orders = await Order.findAll({
         include: [
           {
             model: OrderProduct,
@@ -106,12 +130,21 @@ class OrderController {
               {
                 model: Product,
                 include: [
-                  { model: ProductPhoto, as: "photos" },
-                  { model: Pet, as: "pet" },
-                  { model: Brand, as: "brand" },
+                  {model: ProductPhoto, as: "photos"},
+                  {model: Type, as: "type"},
+                  {model: Brand, as: "brand"},
+                  {model: Tag, as: "tag"},
                 ],
-              },
+              }
             ],
+          },
+          {
+            model: OrderStatus,
+            as: "orderStatus",
+          },
+          {
+            model: OrderType,
+            as: "orderType",
           },
         ],
         order: [["createdAt", "DESC"]],
@@ -123,9 +156,9 @@ class OrderController {
   }
 
   async getOne(req, res) {
-    const { id } = req.params;
-    const order = await OrderItem.findOne({
-      where: { id },
+    const {id} = req.params;
+    const order = await Order.findOne({
+      where: {id},
       include: [
         {
           model: OrderProduct,
@@ -134,12 +167,21 @@ class OrderController {
             {
               model: Product,
               include: [
-                { model: ProductPhoto, as: "photos" },
-                { model: Pet, as: "pet" },
-                { model: Brand, as: "brand" },
+                {model: ProductPhoto, as: "photos"},
+                {model: Type, as: "type"},
+                {model: Brand, as: "brand"},
+                {model: Tag, as: "tag"},
               ],
-            },
+            }
           ],
+        },
+        {
+          model: OrderStatus,
+          as: "orderStatus",
+        },
+        {
+          model: OrderType,
+          as: "orderType",
         },
       ],
     });
@@ -149,14 +191,14 @@ class OrderController {
 
   async delete(req, res, next) {
     try {
-      const { id } = req.query;
+      const {id} = req.params;
 
       if (!id) {
         return next(ApiError.badRequest("Заказ с таким id не найден"));
       }
 
-      await OrderItem.destroy({
-        where: { id },
+      await Order.destroy({
+        where: {id},
       });
 
       return res.json("Заказ удален");
