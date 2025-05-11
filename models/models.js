@@ -26,11 +26,13 @@ const BasketProduct = sequelize.define("basket_product", {
   count: { type: DataTypes.INTEGER },
 });
 
+// ok
 const Favorite = sequelize.define("favorite", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   userId: { type: DataTypes.INTEGER, unique: true },
 });
 
+// ok
 const FavoriteProduct = sequelize.define("favorite_product", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   favoriteId: { type: DataTypes.INTEGER },
