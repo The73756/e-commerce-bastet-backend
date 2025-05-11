@@ -1,6 +1,7 @@
 const sequelize = require("../db");
 const { DataTypes } = require("sequelize");
 
+// ok
 const User = sequelize.define("user", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   surname: { type: DataTypes.STRING },
@@ -79,11 +80,13 @@ const Product = sequelize.define("product", {
   tagId: { type: DataTypes.INTEGER },
 });
 
+// ok
 const Type = sequelize.define("type", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
+// ok
 const Brand = sequelize.define("brand", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },

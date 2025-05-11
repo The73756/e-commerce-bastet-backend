@@ -8,9 +8,11 @@ const basketRouter = require("./basketRouter");
 const favoriteRouter = require("./favoriteRouter");
 const orderRouter = require("./orderRouter");
 const ratingRouter = require("./ratingRouter");
+const tagRouter = require("./tagRouter");
 
 router.use("/user", userRouter);
 router.use("/type", typeRouter);
+router.use("/tag", tagRouter);
 router.use("/brand", brandRouter);
 router.use("/product", productRouter);
 router.use("/basket", basketRouter);
