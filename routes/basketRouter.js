@@ -4,8 +4,8 @@ const basketController = require("../controllers/basketController");
 const authMiddleware = require("../middleware/authMiddleware");
 
 router.post("/", authMiddleware, basketController.create);
-router.delete("/", authMiddleware, basketController.delete);
-router.get("/", authMiddleware, basketController.getAll);
-router.put("/", authMiddleware, basketController.update);
+router.delete("/:id", authMiddleware, basketController.delete);
+router.get("/:basketId", authMiddleware, basketController.getAll);
+router.patch("/:id", authMiddleware, basketController.update);
 
 module.exports = router;

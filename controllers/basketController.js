@@ -26,7 +26,8 @@ class BasketController {
 
   async update(req, res, next) {
     try {
-      const { id, count } = req.body;
+      const {id} = req.params;
+      const { count } = req.body;
       const product = await BasketProduct.findOne({
         where: { id },
       });
@@ -44,7 +45,7 @@ class BasketController {
 
   async getAll(req, res, next) {
     try {
-      const { basketId } = req.query;
+      const { basketId } = req.params;
 
       const basketProducts = await BasketProduct.findAll({
         where: { basketId },
@@ -67,7 +68,7 @@ class BasketController {
 
   async delete(req, res, next) {
     try {
-      const { id } = req.query;
+      const { id } = req.params;
 
       if (!id) {
         return next(ApiError.badRequest("Товар с таким id не найден"));

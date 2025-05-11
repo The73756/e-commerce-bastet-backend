@@ -12,11 +12,13 @@ const User = sequelize.define("user", {
   role: { type: DataTypes.STRING, defaultValue: "USER" },
 });
 
+// ok
 const Basket = sequelize.define("basket", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   userId: { type: DataTypes.INTEGER, unique: true },
 });
 
+// ok
 const BasketProduct = sequelize.define("basket_product", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   basketId: { type: DataTypes.INTEGER },
@@ -99,6 +101,7 @@ const Tag = sequelize.define("tag", {
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
+// ok
 const Rating = sequelize.define("rating", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   userId: { type: DataTypes.INTEGER },
