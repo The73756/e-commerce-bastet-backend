@@ -39,12 +39,14 @@ const FavoriteProduct = sequelize.define("favorite_product", {
   productId: { type: DataTypes.INTEGER },
 });
 
+// ok
 const OrderType = sequelize.define("order_type", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, allowNull: false },
   price: { type: DataTypes.INTEGER },
 });
 
+// ok
 const OrderStatus = sequelize.define("order_status", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, allowNull: false },
