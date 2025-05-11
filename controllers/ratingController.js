@@ -2,7 +2,7 @@ const {
   Rating,
   Product,
   ProductPhoto,
-  Pet,
+  Type,
   Brand,
 } = require("../models/models");
 const ApiError = require("../error/ApiError");
@@ -28,7 +28,7 @@ const updateRating = async (productId) => {
 class RatingController {
   async create(req, res, next) {
     try {
-      const { productId, userId, rate } = req.body;
+      const { productId, userId, rate, comment } = req.body;
       const numberRate = Number(rate);
       const rating = await Rating.findOne({ where: { productId, userId } });
 
@@ -39,7 +39,7 @@ class RatingController {
           await Rating.update({ rate }, { where: { productId, userId } });
         }
       } else {
-        await Rating.create({ productId, userId, rate });
+        await Rating.create({ productId, userId, rate, comment });
       }
       const result = await updateRating(productId);
       return res.json(result);
@@ -50,7 +50,7 @@ class RatingController {
 
   async getAllByUser(req, res, next) {
     try {
-      const { userId } = req.query;
+      const { userId } = req.params;
       const ratings = await Rating.findAll({
         where: { userId },
         include: [
@@ -58,7 +58,7 @@ class RatingController {
             model: Product,
             include: [
               { model: ProductPhoto, as: "photos" },
-              { model: Pet, as: "pet" },
+              { model: Type, as: "type" },
               { model: Brand, as: "brand" },
             ],
           },
@@ -88,7 +88,8 @@ class RatingController {
 
   async delete(req, res, next) {
     try {
-      const { id, productId } = req.query;
+      const { id } = req.params;
+      const {productId} = await Rating.findOne({where: {id}})
       await Rating.destroy({ where: { id } });
       const result = await updateRating(productId);
       return res.json(result);

@@ -68,6 +68,7 @@ const OrderProduct = sequelize.define("order_product", {
   count: { type: DataTypes.INTEGER },
 });
 
+// ok
 const Product = sequelize.define("product", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
@@ -106,6 +107,7 @@ const Rating = sequelize.define("rating", {
   productId: { type: DataTypes.INTEGER, allowNull: false },
 });
 
+// ok
 const ProductInfo = sequelize.define("product_info", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   title: { type: DataTypes.STRING, allowNull: false },
@@ -113,6 +115,7 @@ const ProductInfo = sequelize.define("product_info", {
   productId: { type: DataTypes.INTEGER, allowNull: false },
 });
 
+// ok
 const ProductPhoto = sequelize.define("product_photo", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   url: { type: DataTypes.STRING, allowNull: false },
@@ -159,7 +162,7 @@ Product.belongsTo(Brand);
 Tag.hasMany(Product);
 Product.belongsTo(Tag);
 
-Product.hasMany(Rating);
+Product.hasMany(Rating, { as: "ratings" });
 Rating.belongsTo(Product, { onDelete: "cascade" });
 
 Product.hasMany(BasketProduct);

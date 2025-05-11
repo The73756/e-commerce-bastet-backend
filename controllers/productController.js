@@ -9,7 +9,7 @@ const {
   ProductInfo,
   ProductPhoto,
   Type,
-  Brand, Tag,
+  Brand, Tag, Rating,
 } = require("../models/models");
 
 const includeArr = [
@@ -217,6 +217,10 @@ class ProductController {
         {
           model: ProductInfo,
           as: "info",
+        },
+        {
+          model: Rating,
+          as: "ratings"
         },
         ...includeArr
       ],
