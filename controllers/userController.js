@@ -40,7 +40,7 @@ class UserController {
       await Basket.create({userId: user.id});
       await Favorite.create({userId: user.id});
       const token = generateJwt(user.id, user.surname, user.name, user.email, user.phone, user.role);
-      return res.json({token});
+      return res.json({token, user});
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }
@@ -61,7 +61,7 @@ class UserController {
       }
 
       const token = generateJwt(user.id, user.surname, user.name, user.email, user.phone, user.role);
-      return res.json({token});
+      return res.json({token, user});
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }
@@ -77,7 +77,7 @@ class UserController {
         req.user.phone,
         req.user.role
       );
-      return res.json({token});
+      return res.json({token, user});
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }
