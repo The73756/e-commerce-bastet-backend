@@ -12,13 +12,31 @@ class BasketController {
     try {
       let { productId, basketId } = req.body;
 
-      const basketProduct = await BasketProduct.create({
-        productId,
-        basketId,
-        count: 1,
+      const basketProduct = await BasketProduct.create(
+        {
+          productId,
+          basketId,
+          count: 1,
+        },
+      );
+
+      const result = await BasketProduct.findOne({
+        where: { id: basketProduct.id },
+        include: [
+          {
+            model: Product,
+            as: 'product',
+            include: [
+              { model: ProductPhoto, as: 'photos' },
+              { model: Type, as: 'type' },
+              { model: Brand, as: 'brand' },
+              { model: Tag, as: 'tag' }
+            ]
+          }
+        ]
       });
 
-      return res.json(basketProduct);
+      return res.json(result);
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }

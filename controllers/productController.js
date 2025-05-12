@@ -1,6 +1,6 @@
 require("multer");
 const ApiError = require("../error/ApiError");
-const { Op } = require("sequelize");
+const {Op} = require("sequelize");
 const uuid = require("uuid");
 const path = require("path");
 const fs = require("fs");
@@ -9,21 +9,21 @@ const {
   ProductInfo,
   ProductPhoto,
   Type,
-  Brand, Tag, Rating,
+  Brand, Tag, Rating, User,
 } = require("../models/models");
 
 const includeArr = [
-  { model: ProductPhoto, as: "photos" },
-  { model: Type, as: "type" },
-  { model: Brand, as: "brand" },
-  { model: Tag, as: "tag" },
+  {model: ProductPhoto, as: "photos"},
+  {model: Type, as: "type"},
+  {model: Brand, as: "brand"},
+  {model: Tag, as: "tag"},
 ];
 
 class ProductController {
   async create(req, res, next) {
     try {
-      let { name, price, brandId, typeId, tagId, info, description, quantity } = req.body;
-      const isExist = await Product.findOne({ where: { name } });
+      let {name, price, brandId, typeId, tagId, info, description, quantity} = req.body;
+      const isExist = await Product.findOne({where: {name}});
       const images = req.files;
       const imageNames = [];
 
@@ -87,7 +87,7 @@ class ProductController {
   }
 
   async getAll(req, res) {
-    let { brandId, typeId, limit, page, search, sort, order } = req.query;
+    let {brandId, typeId, limit, page, search, sort, order} = req.query;
     page = page || 1;
     limit = limit || 9;
     sort = sort || "id";
@@ -110,7 +110,7 @@ class ProductController {
 
     if (!brandId && !typeId && search) {
       products = await Product.findAll({
-        where: { name: { [Op.iRegexp]: search } },
+        where: {name: {[Op.iRegexp]: search}},
         order: [[sort, order]],
         include: includeArr,
         limit,
@@ -118,13 +118,13 @@ class ProductController {
       });
 
       count = await Product.count({
-        where: { name: { [Op.iRegexp]: search } },
+        where: {name: {[Op.iRegexp]: search}},
       });
     }
 
     if (brandId && !typeId && !search) {
       products = await Product.findAll({
-        where: { brandId },
+        where: {brandId},
         order: [[sort, order]],
         include: includeArr,
         limit,
@@ -132,13 +132,13 @@ class ProductController {
       });
 
       count = await Product.count({
-        where: { brandId },
+        where: {brandId},
       });
     }
 
     if (brandId && !typeId && search) {
       products = await Product.findAll({
-        where: { brandId, name: { [Op.iRegexp]: search } },
+        where: {brandId, name: {[Op.iRegexp]: search}},
         order: [[sort, order]],
         include: includeArr,
         limit,
@@ -146,13 +146,13 @@ class ProductController {
       });
 
       count = await Product.count({
-        where: { brandId, name: { [Op.iRegexp]: search } },
+        where: {brandId, name: {[Op.iRegexp]: search}},
       });
     }
 
     if (!brandId && typeId && !search) {
       products = await Product.findAll({
-        where: { typeId },
+        where: {typeId},
         order: [[sort, order]],
         include: includeArr,
         limit,
@@ -160,13 +160,13 @@ class ProductController {
       });
 
       count = await Product.count({
-        where: { typeId },
+        where: {typeId},
       });
     }
 
     if (!brandId && typeId && search) {
       products = await Product.findAll({
-        where: { typeId, name: { [Op.iRegexp]: search } },
+        where: {typeId, name: {[Op.iRegexp]: search}},
         order: [[sort, order]],
         include: includeArr,
         limit,
@@ -174,13 +174,13 @@ class ProductController {
       });
 
       count = await Product.count({
-        where: { typeId, name: { [Op.iRegexp]: search } },
+        where: {typeId, name: {[Op.iRegexp]: search}},
       });
     }
 
     if (brandId && typeId && !search) {
       products = await Product.findAll({
-        where: { typeId, brandId },
+        where: {typeId, brandId},
         order: [[sort, order]],
         include: includeArr,
         limit,
@@ -188,13 +188,13 @@ class ProductController {
       });
 
       count = await Product.count({
-        where: { typeId, brandId },
+        where: {typeId, brandId},
       });
     }
 
     if (brandId && typeId && search) {
       products = await Product.findAll({
-        where: { typeId, brandId, name: { [Op.iRegexp]: search } },
+        where: {typeId, brandId, name: {[Op.iRegexp]: search}},
         order: [[sort, order]],
         include: includeArr,
         limit,
@@ -202,17 +202,17 @@ class ProductController {
       });
 
       count = await Product.count({
-        where: { typeId, brandId, name: { [Op.iRegexp]: search } },
+        where: {typeId, brandId, name: {[Op.iRegexp]: search}},
       });
     }
 
-    return res.json({ rows: products, count });
+    return res.json({rows: products, count});
   }
 
   async getOne(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
     const product = await Product.findOne({
-      where: { id },
+      where: {id},
       include: [
         {
           model: ProductInfo,
@@ -220,6 +220,9 @@ class ProductController {
         },
         {
           model: Rating,
+          include: [
+            { model: User, as: "user" },
+          ],
           as: "ratings"
         },
         ...includeArr
@@ -231,18 +234,18 @@ class ProductController {
 
   async update(req, res, next) {
     try {
-      const { id } = req.params;
-      const { name, price, brandId, typeId, tagId, info, description, quantity } = req.body;
+      const {id} = req.params;
+      const {name, price, brandId, typeId, tagId, info, description, quantity} = req.body;
       const images = req.files;
       const imageNames = [];
 
-      const product = await Product.findOne({ where: { id } });
+      const product = await Product.findOne({where: {id}});
       if (!product) {
         return next(ApiError.badRequest("Товар не найден"));
       }
 
       if (name && name !== product.name) {
-        const isNameTaken = await Product.findOne({ where: { name } });
+        const isNameTaken = await Product.findOne({where: {name}});
         if (isNameTaken) {
           return next(ApiError.badRequest("Товар с таким названием уже существует"));
         }
@@ -261,7 +264,7 @@ class ProductController {
       });
 
       if (images?.img) {
-        await ProductPhoto.destroy({ where: { productId: id } });
+        await ProductPhoto.destroy({where: {productId: id}});
 
         if (Array.isArray(images.img)) {
           for (const image of images.img) {
@@ -284,7 +287,7 @@ class ProductController {
       }
 
       if (info) {
-        await ProductInfo.destroy({ where: { productId: id } }); // Удаляем старую инфу
+        await ProductInfo.destroy({where: {productId: id}}); // Удаляем старую инфу
         const parsedInfo = JSON.parse(info);
 
         for (const i of parsedInfo) {
@@ -304,10 +307,10 @@ class ProductController {
 
   async delete(req, res, next) {
     try {
-      const { id } = req.params;
+      const {id} = req.params;
       const product = await Product.findOne({
-        where: { id },
-        include: [{ model: ProductPhoto, as: "photos" }],
+        where: {id},
+        include: [{model: ProductPhoto, as: "photos"}],
       });
 
       if (!product) {
@@ -325,7 +328,7 @@ class ProductController {
         });
       }
 
-      await Product.destroy({ where: { id } });
+      await Product.destroy({where: {id}});
 
       return res.json("Товар удален");
     } catch (e) {

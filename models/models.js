@@ -126,7 +126,7 @@ User.hasOne(Favorite);
 Favorite.belongsTo(User);
 
 User.hasMany(Rating);
-Rating.belongsTo(User);
+Rating.belongsTo(User, { as: "user" });
 
 Basket.hasMany(BasketProduct);
 BasketProduct.belongsTo(Basket);
