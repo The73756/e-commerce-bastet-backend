@@ -1,4 +1,4 @@
-const { Type} = require("../models/models");
+const { Type, Product, ProductPhoto, Brand, Tag} = require("../models/models");
 const ApiError = require("../error/ApiError");
 
 class TypeController {
@@ -21,10 +21,15 @@ class TypeController {
   }
 
   async getAll(req, res) {
-    const types = await Type.findAll({
-      order: [
-        ['id', 'ASC']
-      ]
+    const types = await Type.findAndCountAll({
+      order: [['id', 'ASC']],
+      include: [
+        {
+          model: Brand,
+          through: { model: Product, as: 'product' },
+          as: 'brands',
+        },
+      ],
     });
     return res.json(types);
   }

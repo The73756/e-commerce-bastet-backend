@@ -7,6 +7,7 @@ router.post("/", checkRole("ADMIN"), productController.create);
 router.patch("/:id", checkRole("ADMIN"), productController.update);
 router.delete("/:id", checkRole("ADMIN"), productController.delete);
 router.get("/", productController.getAll);
+router.get("/groups", productController.getGroups);
 router.get("/:id", productController.getOne);
 
 module.exports = router;

@@ -86,6 +86,21 @@ class ProductController {
     }
   }
 
+  async getGroups(req, res) {
+    const types = await Type.findAll({
+      order: [
+        ['id', 'ASC'],
+      ],
+      include: {
+        model: Product,
+        limit: 7,
+        include: includeArr,
+        as: 'products'
+      }
+    });
+    return res.json(types);
+  }
+
   async getAll(req, res) {
     let {brandId, typeId, limit, page, search, sort, order} = req.query;
     page = page || 1;
@@ -96,6 +111,7 @@ class ProductController {
     search = search || "";
     let products;
     let count;
+    let type;
 
     if (!brandId && !typeId && !search) {
       products = await Product.findAll({
