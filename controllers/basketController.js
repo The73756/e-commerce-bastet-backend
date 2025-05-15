@@ -102,6 +102,24 @@ class BasketController {
       next(ApiError.badRequest(e.message));
     }
   }
+
+  async clearAll(req, res, next) {
+    try {
+      let { basketId } = req.body;
+
+      if (!basketId) {
+        return next(ApiError.badRequest("Корзина не найдена"));
+      }
+
+      await BasketProduct.destroy({
+        where: { basketId },
+      });
+
+      return res.json("Корзина очищена");
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
 }
 
 module.exports = new BasketController();
