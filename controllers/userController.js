@@ -77,6 +77,7 @@ class UserController {
         req.user.phone,
         req.user.role
       );
+      const user = req.user;
       return res.json({token, user});
     } catch (e) {
       next(ApiError.badRequest(e.message));
