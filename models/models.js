@@ -58,6 +58,8 @@ const Order = sequelize.define("order", {
   intercom: { type: DataTypes.BOOLEAN, defaultValue: true },
   phone: { type: DataTypes.STRING },
   comment: { type: DataTypes.STRING },
+  date: { type: DataTypes.DATE },
+  time: { type: DataTypes.TIME },
 });
 
 const OrderProduct = sequelize.define("order_product", {

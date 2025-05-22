@@ -22,7 +22,9 @@ class OrderController {
         appartament,
         intercom,
         phone,
-        comment
+        comment,
+        date,
+        time
       } = req.body;
 
       const order = await Order.create({
@@ -36,7 +38,9 @@ class OrderController {
         appartament,
         intercom,
         phone,
-        comment
+        comment,
+        date,
+        time
       });
 
       if (products) {
