@@ -15,7 +15,7 @@ const updateRating = async (productId) => {
   });
 
   const result = avgRating.map((r) => r.get("avgRating"))[0];
-  const newRating = result ? result : 0;
+  const newRating = result ? Number(Number(result).toFixed(2)) : 0;
 
   Product.update({ rating: newRating }, { where: { id: productId } });
 
