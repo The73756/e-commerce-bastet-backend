@@ -14,6 +14,8 @@ AdminJS.registerAdapter(AdminJSSequelize)
 const PORT = process.env.ADMIN_PORT || 3001;
 
 const db = require('./db');
+const {User} = require("./models/models");
+const {compare} = require("bcrypt");
 
 const app = express();
 app.use(formidableMiddleware());
@@ -33,7 +35,33 @@ const adminJs = new AdminJS({
   rootPath: '/admin',
 })
 
-const adminRouter = AdminJSExpress.buildRouter(adminJs)
+const adminRouter = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
+  authenticate: async (email, password) => {
+    const user = await User.findOne({ email })
+    if (user) {
+      const matched = await compare(password, user.password)
+      if (matched && user.role === 'ADMIN') {
+        return user
+      }
+    }
+    return false
+  },
+  cookiePassword: '123',
+})
+
+// const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
+//   authenticate: async (email, password) => {
+//     const user = await User.findOne({ email })
+//     if (user) {
+//       const matched = await bcrypt.compare(password, user.encryptedPassword)
+//       if (matched) {
+//         return user
+//       }
+//     }
+//     return false
+//   },
+//   cookiePassword: 'some-secret-password-used-to-secure-cookie',
+// })
 
 app.use(adminJs.options.rootPath, adminRouter)
 
