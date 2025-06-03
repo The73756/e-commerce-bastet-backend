@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -14,18 +13,18 @@ AdminJS.registerAdapter(AdminJSSequelize)
 const PORT = process.env.ADMIN_PORT || 3001;
 
 const db = require('./db');
-const {User} = require("./models/models");
+const {User, Order, Product} = require("./models/models");
 const {compare} = require("bcrypt");
 
 const app = express();
 app.use(formidableMiddleware());
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.resolve(__dirname, "static")));
+app.use(express.static(path.join(__dirname, 'public')))
 app.use("/api", router);
 
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "Working" });
+  res.status(200).json({message: "Working"});
 });
 
 app.use(errorHandler);
@@ -33,11 +32,25 @@ app.use(errorHandler);
 const adminJs = new AdminJS({
   databases: [db],
   rootPath: '/admin',
+  dashboard: {
+    handler: async () => {
+      return {
+        usersCount: await User.count(),
+        ordersCount: await Order.count(),
+        productsCount: await Product.count()
+      };
+    },
+    component: AdminJS.bundle("./components/dashboard.js"),
+  },
+  branding: {
+    companyName: 'Bastet Admin Panel',
+    logo: '/logo.svg',
+  }
 })
 
 const adminRouter = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
   authenticate: async (email, password) => {
-    const user = await User.findOne({ email })
+    const user = await User.findOne({email})
     if (user) {
       const matched = await compare(password, user.password)
       if (matched && user.role === 'ADMIN') {
