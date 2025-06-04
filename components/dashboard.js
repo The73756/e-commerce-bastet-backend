@@ -67,17 +67,17 @@ module.exports = function Dashboard() {
       
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-value">${data.usersCount}</div>
+          <div class="stat-value">${data?.usersCount}</div>
           <div class="stat-label">Пользователей</div>
         </div>
         
         <div class="stat-card">
-          <div class="stat-value">${data.ordersCount}</div>
+          <div class="stat-value">${data?.ordersCount}</div>
           <div class="stat-label">Заказов</div>
         </div>
         
         <div class="stat-card">
-          <div class="stat-value">${data.productsCount}</div>
+          <div class="stat-value">${data?.productsCount}</div>
           <div class="stat-label">Товаров</div>
         </div>
       </div>
